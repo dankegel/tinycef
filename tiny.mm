@@ -36,7 +36,7 @@
 // Called when the event loop has been started,
 // document double clicks have already been processed,
 // but no events have been executed yet.
-// [The window may be created after this method is executed in some apps?]
+// [The window may be created after this method is executed in some apps.]
 // Right place for setting up event loop level things.
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
@@ -54,14 +54,6 @@ int main() {
     // See https://stackoverflow.com/questions/719877/use-of-alloc-init-instead-of-new
     SharedAppDelegate* delegate = [SharedAppDelegate new];
     [NSApp setDelegate:delegate];
-
-    id window = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 200, 200)
-                 styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO]
-                 autorelease];
-    [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
-    id appName = [[NSProcessInfo processInfo] processName];
-    [window setTitle:appName];
-    [window makeKeyAndOrderFront:nil];
 
     [NSApp run];
     return 0;
