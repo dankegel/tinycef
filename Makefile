@@ -1,7 +1,21 @@
 cefdir = /opt/oblong/deps-64-12/cef3112
 kind = Release
+
+all: tiny tiny-cocoa tiny-cocoa-diy
+
+run: tiny
+	tiny.app/Contents/MacOS/tiny
+
+debug: tiny
+	lldb tiny.app/Contents/MacOS/tiny
+clean:
+	rm -rf tiny tiny.app tiny-cocoa tiny-cocoa-diy
+
+# Tiny cef app
 tiny: tiny.mm
 	clang++ -stdlib=libc++ --std=c++11 -Wno-deprecated-declarations \
+            -DCEF \
+            -DDIYRUN \
             -I $(cefdir) \
             -L $(cefdir)/$(kind)/lib \
             -F$(cefdir)/$(kind)/cefclient.app/Contents/Frameworks -framework Chromium\ Embedded\ Framework \
@@ -16,13 +30,12 @@ tiny: tiny.mm
 	sed -i.bak "s/cefclient/tiny/"  "tiny.app/Contents/Frameworks/tiny Helper.app/Contents/Info.plist"
 	mv "tiny.app/Contents/Frameworks/tiny Helper.app/Contents/MacOS/cefclient Helper" "tiny.app/Contents/Frameworks/tiny Helper.app/Contents/MacOS/tiny Helper"
 
-run: tiny
-	# See https://bitbucket.org/chromiumembedded/cef/issues/1936/override-paths-dir_exe-dir_module-on-linux
-	# https://github.com/chromiumembedded/cef/pull/4
-	tiny.app/Contents/MacOS/tiny
+# Alternate builds
 
-debug: tiny
-	lldb tiny.app/Contents/MacOS/tiny
+# Tiny cocoa app
+tiny-cocoa: tiny.mm
+	clang++          -framework Cocoa tiny.mm -o tiny-cocoa
 
-clean:
-	rm -rf tiny tiny.app
+# Tiny cocoa app with DIY runloop
+tiny-cocoa-diy: tiny.mm
+	clang++ -DDIYRUN -framework Cocoa tiny.mm -o tiny-cocoa-diy

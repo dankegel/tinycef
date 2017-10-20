@@ -5,25 +5,27 @@
 // Written solely to explore problems related to
 //
 // To compile as minimal Cocoa app without CEF (useful for testing cocoa launching):
-//   clang++ -DNOCEF -framework Cocoa tiny.mm -o tiny
+//   clang++ -framework Cocoa tiny.mm -o tiny
 // Thanks to
 //   http://www.cocoawithlove.com/2010/09/minimalist-cocoa-programming.html
 //   https://stackoverflow.com/questions/33345686/cocoa-application-menu-bar-not-clickable
 //
 // To compile as minimal Cocoa app with CEF:
 // (FIXME: adjust or remove -I, -L, and -F options to taste, mine are strange)
-//   clang++ -stdlib=libc++ --std=c++11 \
+//   clang++ -DCEF -stdlib=libc++ --std=c++11 \
 //      -I $(cefdir) \
 //      -L $(cefdir)/$(kind)/lib \
 //      -F$(cefdir)/$(kind)/cefclient.app/Contents/Frameworks -framework Chromium\ Embedded\ Framework \
-//      -framework Cocoa tiny.mm -o tinycef -l cef_dll_wrapper
+//      -framework Cocoa tiny.mm -o tiny -l cef_dll_wrapper
 // Code linearized from https://bitbucket.org/chromiumembedded/cef-project
+//
+// To use the alternative DIY event loop, add -DDIYRUN to the compile commandline.
 //
 // Dan Kegel
 
 #import <Cocoa/Cocoa.h>
 
-#ifndef NOCEF
+#ifdef CEF
 #include "include/cef_app.h"
 #include "include/cef_browser.h"
 #include "include/cef_client.h"
@@ -96,6 +98,55 @@ class BrowserApp : public CefApp, public CefBrowserProcessHandler {
 }
 @end
 
+// Four different styles of event loop
+// 1) CEF   DIYRUN - DIY runloop that calls CefDoMessageLoopWork()
+// 2)       DIYRUN - DIY runloop
+// 3) CEF          - CefRunMessageLoop()
+// 4)              - [NSApp run]
+void runloop() {
+
+#if defined(DIYRUN)
+  #if defined(CEF)
+  // CEF will call [NSAapp run] and break out of main loop when idle...
+  // so [run] will take care of finishLaunching for us.
+  // If you call finishLaunching here anyway, the app will abort with
+  // _createMenuRef called with existing principal MenuRef already associated with menu
+  #else
+  // If you omit this, applicationWillFinishLaunching won't be called, and menus won't work.
+  [NSApp finishLaunching];
+  #endif
+
+  // FIXME: sense quit somehow
+  while (true) {
+    NSEvent *event;
+    event = [NSApp nextEventMatchingMask: NSAnyEventMask
+                               untilDate: [NSDate distantPast]
+                                  inMode: NSDefaultRunLoopMode
+                                 dequeue: YES];
+    if (event != nil)
+      [NSApp sendEvent:event];
+
+ #if defined(CEF)
+    // FIXME: use external message pump integration
+    CefDoMessageLoopWork();
+ #endif
+
+    // if you don't want to burn CPU, you could do this,
+    // but then you need to handle cef's schedulework messages.
+    //event = [NSApp nextEventMatchingMask: NSAnyEventMask
+    //                           untilDate: [NSDate distantFuture]
+    //                              inMode: NSDefaultRunLoopMode
+    //                             dequeue: NO];
+  }
+#else
+ #if defined(CEF)
+    CefRunMessageLoop();
+ #else
+    [NSApp run];
+ #endif
+#endif
+}
+
 int main(int argc, char **argv) {
     [NSAutoreleasePool new];
     [NSApplication sharedApplication];
@@ -105,18 +156,15 @@ int main(int argc, char **argv) {
     SharedAppDelegate* delegate = [SharedAppDelegate new];
     [NSApp setDelegate:delegate];
 
-#ifndef NOCEF
+#ifdef CEF
     // Go cef go!
     CefMainArgs main_args(argc, argv);
     CefRefPtr<CefApp> app = new BrowserApp();
     CefSettings settings;
     CefInitialize(main_args, settings, app, NULL);
-    CefRunMessageLoop();
-#else
-    // Create a window here if you feel like it :-)
-
-    [NSApp run];
 #endif
+
+    runloop();
 
     return 0;
 }
