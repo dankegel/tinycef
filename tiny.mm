@@ -1,8 +1,8 @@
 // Trivial hyperminimal single-file demo of using CEF on Mac
 // Launches and runs ok on osx 10.11 through 10.13
+// Written solely to explore problems related to launching on Mac.
 // For simplicity's sake, does not subclass NSApplication<CefAppProtocol>, so sometimes crashes on exit
 // See cef-project/examples/shared/main_mac.mm for proper way to do it
-// Written solely to explore problems related to
 //
 // To compile as minimal Cocoa app without CEF (useful for testing cocoa launching):
 //   clang++ -framework Cocoa tiny.mm -o tiny
@@ -20,6 +20,7 @@
 // Code linearized from https://bitbucket.org/chromiumembedded/cef-project
 //
 // To use the alternative DIY event loop, add -DDIYRUN to the compile commandline.
+// FIXME Should add a define to use the external message pump
 //
 // Dan Kegel
 
@@ -70,7 +71,6 @@ class BrowserApp : public CefApp, public CefBrowserProcessHandler {
 // Right place for setting up app level things.
 -(void)applicationWillFinishLaunching:(NSNotification *)aNotification
 {
-    [NSApplication sharedApplication];
     id menubar = [[NSMenu new] autorelease];
     id appMenuItem = [[NSMenuItem new] autorelease];
     [menubar addItem:appMenuItem];
@@ -90,9 +90,14 @@ class BrowserApp : public CefApp, public CefBrowserProcessHandler {
 // document double clicks have already been processed,
 // but no events have been executed yet.
 // Right place for setting up event loop level things.
+// Also right place for setting dock icon, since doing it earlier
+// won't override the default one set by NSApp.
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-    [NSApplication sharedApplication];
+    // Set dock icon if desired
+    //NSImage *icon =[[NSImage alloc] initWithContentsOfFile:@"circle.png"];
+    //[NSApp setApplicationIconImage:icon];
+
     // Push app to foreground
     [NSApp activateIgnoringOtherApps:YES];
 }
@@ -162,6 +167,15 @@ int main(int argc, char **argv) {
     CefRefPtr<CefApp> app = new BrowserApp();
     CefSettings settings;
     CefInitialize(main_args, settings, app, NULL);
+#else
+    // Create a window so we can verify it shows up properly (e.g. in front)
+    id window = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 200, 200)
+                 styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO]
+                 autorelease];
+    [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
+    id appName = [[NSProcessInfo processInfo] processName];
+    [window setTitle:appName];
+    [window makeKeyAndOrderFront:nil];
 #endif
 
     runloop();
