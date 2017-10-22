@@ -26,6 +26,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+// Global window variable
+id g_window;
+
 #ifdef CEF
 #include "include/cef_app.h"
 #include "include/cef_browser.h"
@@ -99,6 +102,7 @@ class BrowserApp : public CefApp, public CefBrowserProcessHandler {
     //[NSApp setApplicationIconImage:icon];
 
     // Push app to foreground
+    [g_window makeKeyAndOrderFront:nil];
     [NSApp activateIgnoringOtherApps:YES];
 }
 @end
@@ -169,13 +173,12 @@ int main(int argc, char **argv) {
     CefInitialize(main_args, settings, app, NULL);
 #else
     // Create a window so we can verify it shows up properly (e.g. in front)
-    id window = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 200, 200)
+    g_window = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 200, 200)
                  styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO]
                  autorelease];
-    [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
+    [g_window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
     id appName = [[NSProcessInfo processInfo] processName];
-    [window setTitle:appName];
-    [window makeKeyAndOrderFront:nil];
+    [g_window setTitle:appName];
 #endif
 
     runloop();
