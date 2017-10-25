@@ -4,23 +4,18 @@
 // For simplicity's sake, does not subclass NSApplication<CefAppProtocol>, so sometimes crashes on exit
 // See cef-project/examples/shared/main_mac.mm for proper way to do it
 //
-// To compile as minimal Cocoa app without CEF (useful for testing cocoa launching):
+// To compile a minimal CEF app with a freshly downloaded CEF:
+//   sudo make prefix
+//   make
+// Code linearized from https://bitbucket.org/chromiumembedded/cef-project
+// FIXME Should add a define to use the external message pump
+//
+// To compile a minimal Cocoa app without CEF (useful for testing cocoa launching):
 //   clang++ -framework Cocoa tiny.mm -o tiny
+// To use the alternative DIY event loop, add -DDIYRUN to the compile commandline.
 // Thanks to
 //   http://www.cocoawithlove.com/2010/09/minimalist-cocoa-programming.html
 //   https://stackoverflow.com/questions/33345686/cocoa-application-menu-bar-not-clickable
-//
-// To compile as minimal Cocoa app with CEF:
-// (FIXME: adjust or remove -I, -L, and -F options to taste, mine are strange)
-//   clang++ -DCEF -stdlib=libc++ --std=c++11 \
-//      -I $(cefdir) \
-//      -L $(cefdir)/$(kind)/lib \
-//      -F$(cefdir)/$(kind)/cefclient.app/Contents/Frameworks -framework Chromium\ Embedded\ Framework \
-//      -framework Cocoa tiny.mm -o tiny -l cef_dll_wrapper
-// Code linearized from https://bitbucket.org/chromiumembedded/cef-project
-//
-// To use the alternative DIY event loop, add -DDIYRUN to the compile commandline.
-// FIXME Should add a define to use the external message pump
 //
 // Dan Kegel
 
