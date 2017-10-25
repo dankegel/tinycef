@@ -1,0 +1,11 @@
+prefix=@PREFIX@/cef@CEFBRANCH@
+exec_prefix=${prefix}/@KIND@
+libdir=${exec_prefix}
+includedir=${prefix}/include
+
+Name: cef
+Description: Chromium embedded framework
+URL: https://bitbucket.org/chromiumembedded/cef
+Version: @CEFBRANCH@
+Libs: -F${libdir}/cefclient.app/Contents/Frameworks -framework Chromium\ Embedded\ Framework -L${libdir}/lib -lcef_dll_wrapper
+Cflags: -I${includedir}
