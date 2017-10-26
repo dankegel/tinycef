@@ -24,22 +24,27 @@ PREFIX=${PREFIX:-/opt/tinycef}
 cefbranch=$1
 
 case $cefbranch in
-3112) url=http://opensource.spotify.com/cefbuilds/cef_binary_3.3112.1659.gfef43e0_macosx64.tar.bz2;;
-3163) url=http://opensource.spotify.com/cefbuilds/cef_binary_3.3163.1671.g700dc25_macosx64.tar.bz2;;
+*bz2) file=$cefbranch; cefbranch=$(echo $cefbranch | sed 's/cef_binary_3.//;s/\..*//');;
+3112) file=cef_binary_3.3112.1659.gfef43e0_macosx64.tar.bz2;;
+3163) file=cef_binary_3.3163.1671.g700dc25_macosx64.tar.bz2;;
 *) echo "please update script with url for branch $cefbranch"; exit 1;;
 esac
 
-dir=$(basename $url .tar.bz2)
+dir=$(basename $file .tar.bz2)
 
 #---------------------- Download, unpack ----------------------
 
-wget --continue $url
-# Verify download complete
-rm -f $dir.tar.bz2.sha1
-wget --continue $url.sha1
-sha1=$(cat $dir.tar.bz2.sha1)
-echo "$sha1  $dir.tar.bz2" > sha1.tmp
-shasum -a 1 -c sha1.tmp
+if ! test -f $file
+then
+  url=http://opensource.spotify.com/cefbuilds/$file
+  wget $url
+  # Verify download complete
+  rm -f $dir.tar.bz2.sha1
+  wget --continue $url.sha1
+  sha1=$(cat $dir.tar.bz2.sha1)
+  echo "$sha1  $dir.tar.bz2" > sha1.tmp
+  shasum -a 1 -c sha1.tmp
+fi
 
 rm -rf btmp
 mkdir btmp
