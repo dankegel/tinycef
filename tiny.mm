@@ -24,6 +24,17 @@
 // Global window variable
 id g_window;
 
+static void setDockIcon() {
+  // There's probably a more mac-native way to do this :-)
+  NSBundle *myBundle = [NSBundle mainBundle];
+  NSString *bundlepath = [myBundle resourcePath];
+  NSString *toppath = [[bundlepath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+  NSString *iconpath = [toppath stringByAppendingString:@"/circle.png"];
+
+  NSImage *icon = [[NSImage alloc] initWithContentsOfFile:iconpath];
+  [NSApp setApplicationIconImage:icon];
+}
+
 #ifdef CEF
 #include "include/cef_app.h"
 #include "include/cef_browser.h"
@@ -31,7 +42,17 @@ id g_window;
 
 const char kStartupURL[] = "https://www.google.com";
 
-class MyCefClient : public CefClient {
+class MyCefClient : public CefClient,
+                    public CefLifeSpanHandler {
+
+  // CefLifeSpanHandler methods
+  virtual void OnAfterCreated (CefRefPtr<CefBrowser> browser) OVERRIDE {
+    // The call to setDockIcon() in applicationDidFinishLaunching()
+    // is enough when running tiny via 'tiny.app/Contents/MacOS/tiny',
+    // but not enough when running it via 'open tiny.app'?!
+    setDockIcon();
+  }
+
   IMPLEMENT_REFCOUNTING (MyCefClient);
 };
 
@@ -93,8 +114,7 @@ class BrowserApp : public CefApp, public CefBrowserProcessHandler {
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
     // Set dock icon if desired
-    NSImage *icon =[[NSImage alloc] initWithContentsOfFile:@"circle.png"];
-    [NSApp setApplicationIconImage:icon];
+    setDockIcon();
 
     // Push app to foreground
     [g_window makeKeyAndOrderFront:nil];

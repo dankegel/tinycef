@@ -36,6 +36,7 @@ tiny: tiny.mm $(subprefix)
 	mkdir -p "tiny.app/Contents/Frameworks"
 	mkdir -p "tiny.app/Contents/MacOS"
 	install -m 755 tiny "tiny.app/Contents/MacOS"
+	install -m644 circle.png tiny.app/circle.png
 	# Borrow cefclient's helper app
 	ln -sf "$(subprefix)/$(kind)/Chromium Embedded Framework.framework/Resources" "tiny.app/Contents/."
 	ln -s "$(subprefix)/$(kind)/cefclient.app/Contents/Frameworks/Chromium Embedded Framework.framework" "tiny.app/Contents/Frameworks"
