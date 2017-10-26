@@ -93,8 +93,8 @@ class BrowserApp : public CefApp, public CefBrowserProcessHandler {
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
     // Set dock icon if desired
-    //NSImage *icon =[[NSImage alloc] initWithContentsOfFile:@"circle.png"];
-    //[NSApp setApplicationIconImage:icon];
+    NSImage *icon =[[NSImage alloc] initWithContentsOfFile:@"circle.png"];
+    [NSApp setApplicationIconImage:icon];
 
     // Push app to foreground
     [g_window makeKeyAndOrderFront:nil];
