@@ -1,5 +1,44 @@
 # Hyperminimal demo of using CEF on Mac
 
+## Prerequisites
+
+```
+$ brew install cmake ninja wget
+$ sudo make prefix     # create /opt/tinycef
+```
+
+A recent enough xcode with commandline tools
+
+## Quick start
+
+```
+$ make                 # download cef, build wrapper, install to /opt/tinycef/..., build app
+$ open tiny.app        # run app
+```
+
+## Specifying branch
+
+```
+$ make cefbranch=3112
+$ open tiny.app
+```
+
+As of this writing, it knows about branches 3112, 3163, and 3202.
+To teach it about another branch, add the url to the list at the top of [buildwrapper.sh](buildwrapper.sh)
+
+## Specifying tarball
+
+If you've built your own tarball, you can skip download:
+
+```
+$ make cefbranch=cef_binary_3.3112.1659.gfef43e0_macosx64.tar.bz2
+```
+
+## Bonus non-cef test app
+
+Also builds a tiny cocoa app that just shows a window and menu, since a truly minimal cocoa app lets you dissect cocoa app launching more conveniently.
+
+## Origin
 When upgrading a largish app to use a newer CEF and run on newer Mac OS, I ran into three problems:
 
 1) _createMenuRef called with existing principal MenuRef already associated with menu

@@ -25,6 +25,7 @@ case $cefbranch in
 *bz2) file=$cefbranch; cefbranch=$(echo $cefbranch | sed 's/cef_binary_3.//;s/\..*//');;
 3112) file=cef_binary_3.3112.1659.gfef43e0_linux64.tar.bz2;;
 3163) file=cef_binary_3.3163.1671.g700dc25_linux64.tar.bz2;;
+3202) file=cef_binary_3.3202.1677.gd04a869_linux64.tar.bz2;;
 *) echo "please update script with url for branch $cefbranch"; exit 1;;
 esac
 
@@ -56,6 +57,11 @@ if test $cefbranch -lt 3163
 then
    # Work around CEF issue 2224
    sed -i.bak -E '/void On(Take|Got)Focus/s/\) \{/) override {/' $dir/tests/ceftests/os_rendering_unittest.cc
+fi
+if test $cefbranch -ge 3202
+then
+   # Work around CEF issue 2293 (if not already fixed)
+   sed -i.bak -E 's/pos GREATER_EQUAL 0/pos GREATER -1/' $dir/cmake/cef_macros.cmake
 fi
 
 #---------------------- Configure, compile ----------------------
