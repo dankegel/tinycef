@@ -5,5 +5,5 @@ examples that are really stripped down are handy.
 
 Here are two such demos.
 
-- (mac/README.md)[mac]
-- (linux/README.md)[linux]
+- [mac](mac/README.md)
+- [linux](linux/README.md)
