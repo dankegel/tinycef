@@ -19,26 +19,6 @@ class MyCefClient : public CefClient {
   IMPLEMENT_REFCOUNTING (MyCefClient);
 };
 
-// Minimal implementation of CefApp for the browser process.
-class BrowserApp : public CefApp, public CefBrowserProcessHandler {
- public:
-  BrowserApp() {}
-
-  // CefApp methods:
-  CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() OVERRIDE {
-    return this;
-  }
-
-  // CefBrowserProcessHandler methods:
-  void OnContextInitialized() OVERRIDE {
-    CefWindowInfo window_info;
-    CefBrowserHost::CreateBrowser(window_info, new MyCefClient(), kStartupURL, CefBrowserSettings(), NULL);
-  }
-
- private:
-  IMPLEMENT_REFCOUNTING(BrowserApp);
-  DISALLOW_COPY_AND_ASSIGN(BrowserApp);
-};
 //----- cefsimple/simple_app.h
 // Implement application-level callbacks for the browser process.
 class SimpleApp : public CefApp, public CefBrowserProcessHandler {
