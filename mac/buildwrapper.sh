@@ -28,6 +28,10 @@ case $cefbranch in
 3112) file=cef_binary_3.3112.1659.gfef43e0_macosx64.tar.bz2;;
 3163) file=cef_binary_3.3163.1671.g700dc25_macosx64.tar.bz2;;
 3202) file=cef_binary_3.3202.1677.gd04a869_macosx64.tar.bz2;;
+3282) file=cef_binary_3.3282.1742.g96f907e_macosx64.tar.bz2;;
+3325) file=cef_binary_3.3325.1758.g9aea513_macosx64.tar.bz2;;
+3359) file=cef_binary_3.3359.1774.gd49d25f_macosx64.tar.bz2;;
+3396) file=cef_binary_3.3396.1779.g36f9eab_macosx64.tar.bz2;;
 *) echo "please update script with url for branch $cefbranch"; exit 1;;
 esac
 
@@ -59,6 +63,11 @@ if test $cefbranch -lt 3163
 then
    # Work around CEF issue 2224
    sed -i.bak -E '/void On(Take|Got)Focus/s/) {/) override {/' $dir/tests/ceftests/os_rendering_unittest.cc
+fi
+if test $cefbranch = 3396
+then
+   # Work around https://bitbucket.org/chromiumembedded/cef/issues/2465/3396-cefclient-build-failure-from-missing
+   sed -i.bak -E '/void ReleaseBuffer/s/) {/) override {/' $dir/tests/ceftests/v8_unittest.cc
 fi
 
 #---------------------- Configure, compile ----------------------

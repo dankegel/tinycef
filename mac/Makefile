@@ -12,6 +12,7 @@ kind      = Release
 subprefix       := $(prefix)/cef$(cefbranch)
 PKG_CONFIG_PATH := $(prefix)/lib/pkgconfig:$(PKG_CONFIG_PATH)
 REALUSER        := $(shell who am i | awk '{print $$1}')
+cefwrapper_h    := $(subprefix)/include/cef_app.h
 
 all: tiny tiny-cocoa tiny-cocoa-diy
 
@@ -22,7 +23,7 @@ clean:
 
 # Edit to add or remove -DDIYRUN depending on what code path you want to test
 
-tiny: tiny.mm $(subprefix)
+tiny: tiny.mm $(cefwrapper_h)
 	clang++ --std=c++11 -Wno-deprecated-declarations \
             -DCEF \
             -DDIYRUN \
@@ -67,6 +68,6 @@ $(prefix):
 	mkdir $(prefix)
 	chown $(REALUSER) $(prefix)
 
-$(subprefix): $(prefix)
+$(cefwrapper_h): $(prefix)
 	echo "Building, downloading, installing cefwrapper to $(prefix)"
 	PREFIX=$(prefix) sh buildwrapper.sh $(cefbranch)
