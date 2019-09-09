@@ -21,7 +21,7 @@ $ make cefbranch=3112
 $ ./tiny
 ```
 
-As of this writing, it knows about branches 3112, 3163, and 3202.
+As of this writing, it knows about branches 3112, 3163, 3202, ... 3396, and 3809.
 To teach it about another branch, add the url to the list at the top of [buildwrapper.sh](buildwrapper.sh)
 
 ## Specifying tarball

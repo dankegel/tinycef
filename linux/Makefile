@@ -6,7 +6,7 @@
 #   ./tiny
 
 prefix    = /opt/tinycef
-cefbranch = 3112
+cefbranch = 3809
 kind      = Release
 
 subprefix       := $(prefix)/cef$(cefbranch)
@@ -25,6 +25,7 @@ tiny: tiny.cpp $(subprefix)
             -fdiagnostics-show-option \
             -std=c++11 \
             -I$(subprefix) \
+            -DCEF_BRANCH=$(cefbranch) \
 	    -DCEFCLIENT_DIR=\"$(subprefix)/$(kind)/cefclient/$(kind)\" \
             tiny.cpp \
             -Wl,-rpath $(subprefix)/$(kind)/cefclient/Release -L$(subprefix)/$(kind)/cefclient/Release -lcef \
@@ -34,6 +35,7 @@ tiny: tiny.cpp $(subprefix)
 	ln -sf $(subprefix)/$(kind)/cefclient/$(kind)/icudtl.dat .
 	ln -sf $(subprefix)/$(kind)/cefclient/$(kind)/chrome-sandbox .
 	ln -sf $(subprefix)/$(kind)/cefclient/$(kind)/natives_blob.bin .
+	ln -sf $(subprefix)/$(kind)/cefclient/$(kind)/v8_context_snapshot.bin .
 	ln -sf $(subprefix)/$(kind)/cefclient/$(kind)/snapshot_blob.bin .
 
 #--- Rules to build and install cef wrapper ---

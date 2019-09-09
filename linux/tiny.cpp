@@ -68,6 +68,9 @@ void SimpleApp::OnContextInitialized() {
 
   // Create the first browser window.
   CefBrowserHost::CreateBrowser(window_info, handler, url, browser_settings,
+#if CEF_BRANCH >= 3809
+                                NULL,
+#endif
                                 NULL);
 }
 //----- end cefsimple/simple_app

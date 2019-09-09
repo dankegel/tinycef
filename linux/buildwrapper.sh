@@ -29,6 +29,7 @@ case $cefbranch in
 3225) file=cef_binary_3.3325.1758.g9aea513_linux64.tar.bz2;;
 3359) file=cef_binary_3.3359.1774.gd49d25f_linux64.tar.bz2;;
 3396) file=cef_binary_3.3396.1779.g36f9eab_linux64.tar.bz2;;
+3809) file=cef_binary_76.1.13+gf19c584+chromium-76.0.3809.132_linux64.tar.bz2;;
 *) echo "please update script with url for branch $cefbranch"; exit 1;;
 esac
 
@@ -39,6 +40,7 @@ dir=$(basename $file .tar.bz2)
 if ! test -f $file
 then
   url=http://opensource.spotify.com/cefbuilds/$file
+  # Server rejects wget, to discourage bots; you'll have to do it in a browser these days.
   wget $url
   # Verify download complete
   rm -f $dir.tar.bz2.sha1
