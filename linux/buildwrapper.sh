@@ -29,6 +29,10 @@ case $cefbranch in
 3225) file=cef_binary_3.3325.1758.g9aea513_linux64.tar.bz2;;
 3359) file=cef_binary_3.3359.1774.gd49d25f_linux64.tar.bz2;;
 3396) file=cef_binary_3.3396.1779.g36f9eab_linux64.tar.bz2;;
+3497) file=cef_binary_3.3497.1841.g7f37a0a_linux64.tar.bz2;;
+3683) file=cef_binary_3.3683.1920.g9f41a27_linux64.tar.bz2;;
+3729) file=cef_binary_74.1.19+gb62bacf+chromium-74.0.3729.157_linux64.tar.bz2;;
+3770) file=cef_binary_75.1.14+gc81164e+chromium-75.0.3770.100_linux64.tar.bz2;;  # FTBFS, needs patch
 3809) file=cef_binary_76.1.13+gf19c584+chromium-76.0.3809.132_linux64.tar.bz2;;
 *) echo "please update script with url for branch $cefbranch"; exit 1;;
 esac
@@ -39,8 +43,7 @@ dir=$(basename $file .tar.bz2)
 
 if ! test -f $file
 then
-  url=http://opensource.spotify.com/cefbuilds/$file
-  # Server rejects wget, to discourage bots; you'll have to do it in a browser these days.
+  url=$(echo http://opensource.spotify.com/cefbuilds/$file | sed 's/+/%2B/g')
   wget $url
   # Verify download complete
   rm -f $dir.tar.bz2.sha1
@@ -67,6 +70,10 @@ if test $cefbranch -ge 3202
 then
    # Work around CEF issue 2293 (if not already fixed)
    sed -i.bak -E 's/pos GREATER_EQUAL 0/pos GREATER -1/' $dir/cmake/cef_macros.cmake
+fi
+if test -f ../fix-$cefbranch.patch
+then
+   (cd $dir; patch -p1 < ../../fix-$cefbranch.patch)
 fi
 
 #---------------------- Configure, compile ----------------------

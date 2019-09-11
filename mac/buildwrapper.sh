@@ -32,6 +32,11 @@ case $cefbranch in
 3325) file=cef_binary_3.3325.1758.g9aea513_macosx64.tar.bz2;;
 3359) file=cef_binary_3.3359.1774.gd49d25f_macosx64.tar.bz2;;
 3396) file=cef_binary_3.3396.1779.g36f9eab_macosx64.tar.bz2;;
+3497) file=cef_binary_3.3497.1841.g7f37a0a_macosx64.tar.bz2;;
+3683) file=cef_binary_3.3683.1920.g9f41a27_macosx64.tar.bz2;;
+3729) file=cef_binary_74.1.19+gb62bacf+chromium-74.0.3729.157_macosx64.tar.bz2;;
+3770) file=cef_binary_75.1.14+gc81164e+chromium-75.0.3770.100_macosx64.tar.bz2;;
+3809) file=cef_binary_76.1.13+gf19c584+chromium-76.0.3809.132_macosx64.tar.bz2;;
 *) echo "please update script with url for branch $cefbranch"; exit 1;;
 esac
 

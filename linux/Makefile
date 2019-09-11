@@ -16,7 +16,7 @@ REALUSER        := $(shell logname)
 all: tiny
 
 clean:
-	rm -rf tiny btmp *.tmp chrome-sandbox icudtl.dat natives_blob.bin snapshot_blob.bin
+	rm -rf tiny btmp *.tmp *.log *.bin *.dat chrome-sandbox GPUCache
 
 #--- Rule to build cef demo ---
 

@@ -1,0 +1,26 @@
+From 46cf80026916ceadcbd4540055fea949baf14995 Mon Sep 17 00:00:00 2001
+From: Marshall Greenblatt <magreenblatt@gmail.com>
+Date: Fri, 15 Mar 2019 13:41:48 -0400
+Subject: [PATCH] Linux: cmake: Add xi dependency for cefclient (see issue
+ #1059)
+
+---
+ tests/cefclient/CMakeLists.txt.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/cefclient/CMakeLists.txt b/tests/cefclient/CMakeLists.txt
+index 2cd49c5..2f12b0d 100644
+--- a/tests/cefclient/CMakeLists.txt
++++ b/tests/cefclient/CMakeLists.txt
+@@ -122,7 +122,7 @@ if(OS_LINUX)
+     )
+ 
+   # Find required libraries and update compiler/linker variables.
+-  FIND_LINUX_LIBRARIES("gmodule-2.0 gtk+-2.0 gthread-2.0 gtk+-unix-print-2.0 gtkglext-1.0")
++  FIND_LINUX_LIBRARIES("gmodule-2.0 gtk+-2.0 gthread-2.0 gtk+-unix-print-2.0 gtkglext-1.0 xi")
+ 
+   # Executable target.
+   add_executable(${CEF_TARGET} ${CEFCLIENT_SRCS})
+-- 
+2.10.5
+
