@@ -20,7 +20,7 @@ clean:
 
 #--- Rule to build cef demo ---
 
-tiny: tiny.cpp $(subprefix)
+tiny: tiny.cpp $(subprefix)/$(kind)
 	g++ \
             -fdiagnostics-show-option \
             -std=c++11 \
@@ -28,7 +28,7 @@ tiny: tiny.cpp $(subprefix)
             -DCEF_BRANCH=$(cefbranch) \
 	    -DCEFCLIENT_DIR=\"$(subprefix)/$(kind)/cefclient/$(kind)\" \
             tiny.cpp \
-            -Wl,-rpath $(subprefix)/$(kind)/cefclient/Release -L$(subprefix)/$(kind)/cefclient/Release -lcef \
+            -Wl,-rpath $(subprefix)/$(kind)/cefclient/$(kind) -L$(subprefix)/$(kind)/cefclient/$(kind) -lcef \
             -L$(subprefix)/$(kind)/lib -lcef_dll_wrapper \
             -lX11 \
             -o tiny
@@ -50,6 +50,6 @@ $(prefix):
 	mkdir $(prefix)
 	chown $(REALUSER) $(prefix)
 
-$(subprefix): $(prefix)
+$(subprefix)/$(kind): $(prefix)
 	echo "Building, downloading, installing cefwrapper to $(prefix)"
 	PREFIX=$(prefix) sh buildwrapper.sh $(cefbranch)
